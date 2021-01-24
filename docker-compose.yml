@@ -1,0 +1,53 @@
+version: "3.7"
+services:
+
+  ## PHP-FPM Container ############
+  php-fpm:
+    build:
+      context: ./docker/php-fpm
+      dockerfile: Dockerfile
+    image: php-fpm
+    container_name: glass-php-fpm
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - glass-estudo-network
+
+  ## NGINX Container #############
+  nginx:
+    image: nginx:1.19-alpine
+    container_name: glass-nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx:/etc/nginx/conf.d
+    networks:
+      - glass-estudo-network
+
+  # MySQL Container
+  mysql:
+    image: mysql:8.0
+    container_name: glass-mysql
+    volumes:
+      - glass-estudo-db:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=glass
+      - MYSQL_DATABASE=glass
+      - MYSQL_USER=glass
+      - MYSQL_PASSWORD=glass
+    networks:
+      - glass-estudo-network
+
+networks:
+  glass-estudo-network:
+    driver: bridge
+
+volumes:
+  glass-estudo-db:
+    driver: local
