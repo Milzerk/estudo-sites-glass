@@ -9,4 +9,4 @@ jobs:
       - checkout
       # Whatever you want to do
       - run: sudo apt-get update
-      - run: sudo git pull
+      - run: sudo git clone https://github.com/Milzerk/estudo-sites-glass.git
